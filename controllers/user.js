@@ -1,4 +1,5 @@
 const userService = require('../services/user')
+const departmentService = require('../services/department')
 
 module.exports.getAllUsers = (req, res, next) => {
   userService.findAll()
@@ -16,33 +17,17 @@ module.exports.createUser = (req, res, next) => {
     })
 }
 
-module.exports.updateUserInfo = (req, res, next) => {
-  const {
-    name, surname, password, email,
-  } = req.body
+module.exports.createDepartment = (req, res, next) => {
+  const department = req.body
+  departmentService.insert(department)
+    .then((update) => {
+      console.log(update)
+      res.status(204).end()
+    })
+}
 
-  userService.findByEmail(req.user.email)
-    .then((user) => {
-      const {id} = user
-      const dataToUpdate = {
-        id,
-        name,
-        surname,
-        email: email.toLowerCase(),
-      }
-      if (password) {
-        dataToUpdate.password = crypto.createHash('md5').update(password).digest('hex')
-      }
-      return userService.saveOrUpdate(dataToUpdate)
-        .then(() => Object.assign({}, dataToUpdate, user.toObject()))
-    })
-    .then((user) => {
-      const token = jwt.sign(
-        {email, role: user.role.slug, id: user.id},
-        serverConfig.tokenSecret,
-      )
-      res.send({token})
-    })
-    .catch(next)
+module.exports.updateUser = (req, res, next) => {
+  const dataToUpdate = req.body
+  userService.update()
 }
 
