@@ -2,9 +2,6 @@ const express = require('express')
 
 const server = express()
 const bodyParser = require('body-parser')
-const mongoose = require('mongoose')
-
-mongoose.Promise = global.Promise
 const db = require('./db')
 const user = require('./routes/user')
 
